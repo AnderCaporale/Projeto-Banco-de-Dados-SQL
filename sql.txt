@@ -1,0 +1,189 @@
+create table PRODUTORA(
+  	id_produtora int PRIMARY KEY,
+ 	nome VARCHAR(50) not NULL,
+    login VARCHAR(20) NOT NULL UNIQUE,
+    senha VARCHAR(20) NOT NULL,
+  	
+  	seguidores INT NOT NULL,
+  	id_biblioteca int NOT NULL,
+  	qtdJogos int not NULL
+);
+
+create table JOGO(
+  	id_jogo int PRIMARY KEY,
+ 	nome VARCHAR(50) not NULL,
+	nota float NOT NULL,
+  	id_produtora int not NULL,
+  
+  	FOREIGN KEY (id_produtora) REFERENCES PRODUTORA(id_produtora)
+);
+
+
+
+create table USUARIO(
+  	id_usuario int PRIMARY KEY,
+ 	nome VARCHAR(50) not NULL,
+  	login VARCHAR(20) UNIQUE,
+	senha VARCHAR(20) NOT NULL,
+  	
+	saldo float not NULL,
+  	nivel INT NOT NULL,
+  	id_biblioteca int NOT NULL,
+  	qtdJogos int not NULL
+  
+	--id_amigos int NOT NULL,
+    --FOREIGN KEY (id_amigos) REFERENCES AMIGOS(id_amigos)
+);
+INSERT INTO USUARIO VALUES 
+(1, 'nome', 'login', 'senha', 15.3, 10, 12345, 34),
+(2, 'nome', 'login123', 'senha', 15.3, 10, 12345, 34);
+
+
+create table AMIGOS(
+  	id_usuario int,
+ 	amigos int, 
+	PRIMARY KEY(id_usuario, amigos),
+  
+  	FOREIGN KEY (id_usuario) REFERENCES USUARIO(id_usuario)
+);
+
+create table JOGOS_USUARIO(
+  	id_usuario int,
+ 	id_jogo int,
+  
+  	PRIMARY key (id_usuario, id_jogo),
+ 	FOREIGN KEY (id_usuario) REFERENCES USUARIO(id_usuario),
+  	FOREIGN KEY (id_jogo) REFERENCES JOGO(id_jogo)
+);
+
+
+create table INSIGNIA(
+  	id_insignia int PRIMARY KEY,
+ 	nome VARCHAR(15) not NULL,
+ 	descricao VARCHAR(100) NOT NULL
+);
+
+create table COLECIONA_INSIGNIA(
+  	id_insignia int,
+  	id_usuario int,
+ 	data_insig TIMESTAMP not NULL,
+	
+  	PRIMARY key (id_insignia, id_usuario),
+  	FOREIGN KEY (id_insignia) REFERENCES INSIGNIA(id_insignia),
+  	FOREIGN KEY (id_usuario) REFERENCES USUARIO(id_usuario)
+);
+
+
+
+create table JOGOS_PRODUTORA(
+  	id_produtora int,
+ 	id_jogo int,
+  
+  	PRIMARY key (id_produtora, id_jogo),
+ 	FOREIGN KEY (id_produtora) REFERENCES PRODUTORA(id_produtora),
+  	FOREIGN KEY (id_jogo) REFERENCES JOGO(id_jogo)
+);
+
+
+
+create table PEDIDO_COMPRA(
+  	id_pedido int PRIMARY KEY,
+ 	data_compra TIMESTAMP not NULL,
+  	id_usuario INT not NULL,
+  	id_jogo INT NOT NULL,
+
+  	FOREIGN KEY (id_usuario) REFERENCES USUARIO(id_usuario),
+  	FOREIGN KEY (id_jogo) REFERENCES JOGO(id_jogo)
+);
+
+
+create table GENERO(
+  	id_genero int PRIMARY KEY,
+ 	nome VARCHAR(15) not NULL unique
+);
+
+create table CLASSIFICA_JOGO(
+  	id_genero int,
+ 	id_jogo int,
+  
+  	PRIMARY key (id_genero, id_jogo),
+ 	FOREIGN KEY (id_genero) REFERENCES GENERO(id_genero),
+  	FOREIGN KEY (id_jogo) REFERENCES JOGO(id_jogo)
+);
+
+create table CONQUISTA(
+  	nome VARCHAR(15) PRIMARY KEY,
+ 	descricao VARCHAR(60) not NULL,
+  	id_jogo int not NULL,
+  
+  	FOREIGN KEY (id_jogo) REFERENCES JOGO(id_jogo)
+);
+
+create table ATINGE_CONQUISTA(
+  	id_jogo int,
+  	id_usuario int,
+  	data_conq TIMESTAMP not NULL,
+  	
+  	PRIMARY key (id_jogo, id_usuario),
+  	FOREIGN KEY (id_usuario) REFERENCES USUARIO(id_usuario),
+ 	FOREIGN KEY (id_jogo) REFERENCES JOGO(id_jogo)
+);
+
+
+create table AVALIACAO_JOGO(
+  	id_avaliacao int PRIMARY KEY,
+  	nota FLOAT NOT NULL,
+  	texto VARCHAR(500), 
+  	id_usuario int not NULL,
+ 	id_jogo int not NULL,
+  
+  	FOREIGN KEY (id_usuario) REFERENCES USUARIO(id_usuario),
+ 	FOREIGN KEY (id_jogo) REFERENCES JOGO(id_jogo)
+);
+
+create table LOJA_JOGOS(
+  	pais VARCHAR(20) PRIMARY KEY
+);
+
+create table CATALOGO(
+  	pais_loja VARCHAR(20),
+ 	id_jogo int,
+  	preco float NOT NULL,	
+  
+  	PRIMARY key (pais_loja, id_jogo),
+  	FOREIGN KEY (pais_loja) REFERENCES LOJA_JOGOS(pais),
+ 	FOREIGN KEY (id_jogo) REFERENCES JOGO(id_jogo)
+);
+
+create table FUTUROS_LANCAMENTOS(
+  	id_lancamentos INT PRIMARY KEY,
+  	titulo VARCHAR(50) not NULL,
+  	descricao VARCHAR(100) not NULL,
+  	data_prevista TIMESTAMP not NULL,
+  	id_produtora INT not NULL,
+  
+  	FOREIGN KEY (id_produtora) REFERENCES PRODUTORA(id_produtora)
+);
+
+
+create table NOVIDADES(
+  	id_lancamentos int,
+ 	pais_loja VARCHAR(20),
+  
+  	PRIMARY key (id_lancamentos, pais_loja),
+ 	FOREIGN KEY (pais_loja) REFERENCES LOJA_JOGOS(pais),
+  	FOREIGN KEY (id_lancamentos) REFERENCES FUTUROS_LANCAMENTOS(id_lancamentos)
+);
+
+
+
+
+INSERT INTO AMIGOS VALUES
+(1, 2),
+(1, 123),
+(1, 12345),
+(2, 1),
+(2, 1234);
+
+
+SELECT * FROM AMIGOS
